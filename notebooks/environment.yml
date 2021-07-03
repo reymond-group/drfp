@@ -1,0 +1,10 @@
+name: drfp-environment
+channels:
+  - rdkit
+dependencies:
+  - rdkit
+  - numpy
+  - matplotlib
+  - pandas
+  - scikit-learn
+  - shap

@@ -56,9 +56,9 @@ def test_shingling_from_mol(mol):
     ]
 
 
-def test_encode(rxn, rxn_with_reagent):
-    fp, ngrams = DrfpEncoder.encode(rxn)
-    fp_2, ngrams_2 = DrfpEncoder.encode(rxn_with_reagent)
+def test_internal_encode(rxn, rxn_with_reagent):
+    fp, ngrams = DrfpEncoder.internal_encode(rxn)
+    fp_2, ngrams_2 = DrfpEncoder.internal_encode(rxn_with_reagent)
 
     assert list(np.sort(fp)) == list(np.sort(fp_2))
     assert list(np.sort(fp)) == [
@@ -165,3 +165,23 @@ def test_fold():
         0,
     ]
     assert list(on_bits) == [6, 6, 2, 5]
+
+
+def test_encode(rxn):
+    fp = DrfpEncoder.encode(rxn)
+    assert len(fp) == 1
+    assert len(fp[0]) == 2048
+
+    fp = DrfpEncoder.encode([rxn, rxn])
+    assert len(fp) == 2
+
+
+def test_encode_mapping(rxn):
+    fp, mapping = DrfpEncoder.encode(rxn, mapping=True)
+    assert len(fp) == 1
+    assert len(fp[0]) == 2048
+    assert len(mapping) == 39
+
+    fp, mapping = DrfpEncoder.encode([rxn, rxn], mapping=True)
+    assert len(fp) == 2
+    assert len(mapping) == 39

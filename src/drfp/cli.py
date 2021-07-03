@@ -54,9 +54,17 @@ def main(
     for line in input_file:
         smiles.append(line.strip())
 
-    fps, fragment_map = DrfpEncoder.encode_list(
-        smiles, n_folded_length, min_radius, radius, rings, mapping
-    )
+    fps = None
+    fragment_map = None
+
+    if mapping:
+        fps = DrfpEncoder.encode(
+            smiles, n_folded_length, min_radius, radius, rings, mapping
+        )
+    else:
+        fps, fragment_map = DrfpEncoder.encode(
+            smiles, n_folded_length, min_radius, radius, rings, mapping
+        )
 
     pickle.dump(fps, output_file)
 

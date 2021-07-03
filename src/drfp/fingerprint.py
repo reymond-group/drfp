@@ -1,4 +1,4 @@
-from typing import Iterable, List, Tuple, Set, Dict
+from typing import Iterable, List, Tuple, Set, Dict, Union
 from collections import defaultdict
 from hashlib import blake2b
 import numpy as np
@@ -88,7 +88,7 @@ class DrfpEncoder:
         return list(set(shingling))
 
     @staticmethod
-    def encode(
+    def internal_encode(
         in_smiles: str,
         radius: int = 3,
         min_radius: int = 0,
@@ -199,18 +199,18 @@ class DrfpEncoder:
         return folded, on_bits
 
     @staticmethod
-    def encode_list(
-        X: Iterable,
+    def encode(
+        X: Union[Iterable, str],
         n_folded_length: int = 2048,
         min_radius: int = 0,
         radius: int = 3,
         rings: bool = True,
         mapping: bool = False,
-    ) -> Tuple[List[np.ndarray], Dict[int, Set[str]]]:
+    ) -> Union[List[np.ndarray], Tuple[List[np.ndarray], Dict[int, Set[str]]]]:
         """Encodes a list of reaction SMILES using the drfp fingerprint.
 
         Args:
-            X: An interable (e.g. List) of reaction SMILES
+            X: An interable (e.g. List) of reaction SMILES or a single reaction SMILES
             n_folded_length: The folded length of the fingerpint (the parameter for the modulo hashing)
             min_radius: The minimum radius of a substructure
             radius: The maximum radius of a substructure
@@ -218,12 +218,15 @@ class DrfpEncoder:
             mapping: Return a feature to substructure mapping in addition to the fingerprints
 
         Returns:
-            A list
+            A list of drfp fingerprints or, if mapping is enabled, a tuple containing a list of drfp fingerprints and a mapping dict.
         """
+        if isinstance(X, str):
+            X = [X]
+
         result = []
         result_map = defaultdict(set)
-        for i, x in enumerate(X):
-            hashed_diff, smiles_diff = DrfpEncoder.encode(
+        for _, x in enumerate(X):
+            hashed_diff, smiles_diff = DrfpEncoder.internal_encode(
                 x, min_radius=min_radius, radius=radius, rings=rings
             )
 
@@ -243,4 +246,4 @@ class DrfpEncoder:
         if mapping:
             return result, result_map
         else:
-            return result, None
+            return result

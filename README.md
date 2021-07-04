@@ -32,7 +32,7 @@ rxn_smiles = [
     "CCOC(=O)C(CC)c1cccnc1.Cl.O>>CCC(C(=O)O)c1cccnc1",
 ]
 
-fps = DrfpEncoder.encode(smiles)
+fps = DrfpEncoder.encode(rxn_smiles)
 ```
 
 The variable `fps` now points to a list containing the fingerprints for the two reaction SMILES as numpy arrays.
@@ -40,6 +40,8 @@ The variable `fps` now points to a list containing the fingerprints for the two 
 
 For more examples, see the two notebooks [here](), and [here]().
 ## Documentation
+
+The library contains the class `DrfpEncoder` with one public method `encode`.
 
 | `DrfpEncoder.encode()` | Description | Type | Default |
 |-|-|-|-|

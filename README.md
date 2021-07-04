@@ -1,4 +1,4 @@
-![example workflow](https://github.com/reymond-group/drfp/actions/workflows/tests.yml/badge.svg)
+![test workflow](https://github.com/reymond-group/drfp/actions/workflows/tests.yml/badge.svg)
 # DRFP
 
 
@@ -17,8 +17,35 @@ Once DRFP is installed, there are two ways you can use it. You can use the cli a
 
 ### CLI
 ```bash
-drfp my_rxn_smiles.txt my_rxn_fps.pkl
+drfp my_rxn_smiles.txt my_rxn_fps.pkl -d 512
 ```
 
+This will create a pickle dump containing an numpy ndarray containing DRFP fingerprints with a dimensionality of 512. To also export the mapping, use the flag `--mapping`. This will create the additional file `my_rxn_fps.map.pkl`. You can call `drfp --help` to show all available flags and options.
+
+### Library
+Following is a basic exmple of how to use DRFP from a Python script.
+```python
+from drfp import DrfpEncoder
+
+rxn_smiles = [
+    "CO.O[C@@H]1CCNC1.[C-]#[N+]CC(=O)OC>>[C-]#[N+]CC(=O)N1CC[C@@H](O)C1",
+    "CCOC(=O)C(CC)c1cccnc1.Cl.O>>CCC(C(=O)O)c1cccnc1",
+]
+
+fps = DrfpEncoder.encode(smiles)
+```
+
+The variable `fps` now points to a list containing the fingerprints for the two reaction SMILES as numpy arrays.
+
+
+For more examples, see the two notebooks [here](), and [here]().
 ## Documentation
 
+| `DrfpEncoder.encode()` | Description | Type | Default |
+|-|-|-|-|
+| `X` | An iterable (e.g. a list) of reaction SMILES or a single reaction SMILES to be encoded | `Iterable` or `str` |  |
+| `n_folded_length` | The folded length of the fingerprint (the parameter for the modulo hashing) | `int` | `2048` |
+| `min_radius` | The minimum radius of a substructure (0 includes single atoms) | `int` | `0` |
+| `radius` | The maximum radius of a substructure | `int` | `3` |
+| `rings` | Whether to include full rings as substructures | `bool` | `True` |
+| `mapping` |  Return a feature to substructure mapping in addition to the fingerprints. If true, the return signature of this method is `Tuple[List[np.ndarray], Dict[int, Set[str]]]` | `bool` | `False` |

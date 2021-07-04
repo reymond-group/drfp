@@ -1,4 +1,4 @@
-![example workflow](https://github.com/reymond-group/drfp/actions/workflows/python-package-conda.yml/badge.svg)
+![example workflow](https://github.com/reymond-group/drfp/actions/workflows/tests.yml/badge.svg)
 # DRFP
 
 

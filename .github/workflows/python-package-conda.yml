@@ -30,5 +30,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with tox
       run: |
-        pip install drfp[testing]
+        pip install -e .[testing]
         tox

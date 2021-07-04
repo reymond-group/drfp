@@ -23,7 +23,7 @@ drfp my_rxn_smiles.txt my_rxn_fps.pkl -d 512
 This will create a pickle dump containing an numpy ndarray containing DRFP fingerprints with a dimensionality of 512. To also export the mapping, use the flag `--mapping`. This will create the additional file `my_rxn_fps.map.pkl`. You can call `drfp --help` to show all available flags and options.
 
 ### Library
-Following is a basic exmple of how to use DRFP from a Python script.
+Following is a basic exmple of how to use DRFP in a Python script.
 ```python
 from drfp import DrfpEncoder
 

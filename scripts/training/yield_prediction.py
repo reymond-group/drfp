@@ -41,7 +41,7 @@ def load_data(
 
 def predict_buchwald_hartwig_cv():
     splits = [98, 197, 395, 791, 1186, 1977, 2766]
-    buchwald_hartwig_yield_root = Path(Path.home(), "../../data/")
+    buchwald_hartwig_yield_root = Path("../../data/")
 
     buchwald_hartwig_yield_fps = []
 
@@ -80,7 +80,7 @@ def predict_buchwald_hartwig_cv():
 
 
 def predict_buchwald_hartwig_tests():
-    buchwald_hartwig_yield_root = Path(Path.home(), "../../data/")
+    buchwald_hartwig_yield_root = Path("../../data/")
 
     buchwald_hartwig_yield_fps = []
 
@@ -123,7 +123,7 @@ def predict_buchwald_hartwig_tests():
 
 def predict_suzuki_miyaura():
     splits = [4032]
-    buchwald_hartwig_yield_root = Path(Path.home(), "../../data/")
+    buchwald_hartwig_yield_root = Path("../../data/")
 
     files = []
 

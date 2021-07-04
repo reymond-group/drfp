@@ -1,4 +1,4 @@
-# drfp
+# DRFP
 
 
 An NLP-inspired chemical reaction fingerprint based on basic set arithmetic.

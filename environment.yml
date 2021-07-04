@@ -1,0 +1,7 @@
+name: drfp-environment
+channels:
+  - rdkit
+dependencies:
+  - rdkit
+  - numpy
+  - click

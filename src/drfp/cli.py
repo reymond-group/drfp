@@ -58,18 +58,20 @@ def main(
     fragment_map = None
 
     if mapping:
-        fps = DrfpEncoder.encode(
+        fps, fragment_map = DrfpEncoder.encode(
             smiles, n_folded_length, min_radius, radius, rings, mapping
         )
     else:
-        fps, fragment_map = DrfpEncoder.encode(
+        fps = DrfpEncoder.encode(
             smiles, n_folded_length, min_radius, radius, rings, mapping
         )
 
     pickle.dump(fps, output_file)
 
     if mapping:
-        with open(f"{output_file.name}.map", "wb+") as f:
+        filename_parts = output_file.name.split(".")
+        filename_parts.insert(len(filename_parts) - 1, "map")
+        with open(".".join(filename_parts), "wb+") as f:
             pickle.dump(fragment_map, f)
 
 

@@ -13,7 +13,12 @@ Predicting the nature and outcome of reactions using computational methods is an
 
 *DRFP* can be installed from pypi using `pip install drfp`. However, it depends on [RDKit](https://www.rdkit.org/) which is best [installed using conda](https://www.rdkit.org/docs/Install.html).
 
-Once DRFP is installed, there are two ways you can use it. You can use the cli app `drfp` or the API provided by the package.
+Once DRFP is installed, there are two ways you can use it. You can use the cli app `drfp` or the library provided by the package.
+
+### CLI
+```bash
+drfp my_rxn_smiles.txt my_rxn_fps.pkl
+```
 
 ## Documentation
 

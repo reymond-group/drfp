@@ -2,7 +2,6 @@
 [run]
 branch = True
 source = drfp
-# omit = bad_file.py
 
 [paths]
 source =

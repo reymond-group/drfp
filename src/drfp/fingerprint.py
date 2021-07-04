@@ -210,9 +210,9 @@ class DrfpEncoder:
         """Encodes a list of reaction SMILES using the drfp fingerprint.
 
         Args:
-            X: An interable (e.g. List) of reaction SMILES or a single reaction SMILES
-            n_folded_length: The folded length of the fingerpint (the parameter for the modulo hashing)
-            min_radius: The minimum radius of a substructure
+            X: An iterable (e.g. List) of reaction SMILES or a single reaction SMILES to be encoded
+            n_folded_length: The folded length of the fingerprint (the parameter for the modulo hashing)
+            min_radius: The minimum radius of a substructure (0 includes single atoms)
             radius: The maximum radius of a substructure
             rings: Whether to include full rings as substructures
             mapping: Return a feature to substructure mapping in addition to the fingerprints

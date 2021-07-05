@@ -88,7 +88,7 @@ for name in NAMES:
 
         data.columns = ["text", "labels"]
 
-        X, mapping = DrfpEncoder.encode_list(
+        X, mapping = DrfpEncoder.encode(
             data.text.to_numpy(),
             n_folded_length=2048,
             radius=3,

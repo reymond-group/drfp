@@ -39,7 +39,7 @@ for (name, split) in NAME_SPLIT:
     df = df[["rxn", "y"]]
     df.columns = ["text", "labels"]
 
-    X, mapping = DrfpEncoder.encode_list(
+    X, mapping = DrfpEncoder.encode(
         df.text.to_numpy(), n_folded_length=2048, radius=3, rings=True, mapping=True
     )
 

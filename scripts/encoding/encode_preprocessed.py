@@ -14,7 +14,7 @@ import pandas as pd
 
 
 def encode(smiles: Iterable, length: int = 2048, radius: int = 3) -> np.ndarray:
-    return DrfpEncoder.encode_list(
+    return DrfpEncoder.encode(
         smiles,
         n_folded_length=length,
         radius=radius,

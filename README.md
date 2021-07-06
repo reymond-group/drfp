@@ -61,4 +61,4 @@ The library contains the class `DrfpEncoder` with one public method `encode`.
 | `mapping` |  Return a feature to substructure mapping in addition to the fingerprints. If true, the return signature of this method is `Tuple[List[np.ndarray], Dict[int, Set[str]]]` | `bool` | `False` |
 
 # Reproduce
-Want to reproduce the data in our paper? You can find all the data in the `data` folder and encoding and training scripts in the `scripts` folder.
+Want to reproduce the results in our paper? You can find all the data in the `data` folder and encoding and training scripts in the `scripts` folder.

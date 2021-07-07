@@ -62,3 +62,6 @@ The library contains the class `DrfpEncoder` with one public method `encode`.
 
 # Reproduce
 Want to reproduce the results in our paper? You can find all the data in the `data` folder and encoding and training scripts in the `scripts` folder.
+
+# Cite Us
+>Probst, D., Schwaller, P., & Reymond, J.-L. (2021). Reaction classification and yield prediction using the differential reaction fingerprint DRFP. doi:10.33774/chemrxiv-2021-mc870

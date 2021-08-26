@@ -1,4 +1,4 @@
-from typing import Iterable, List, Tuple, Set, Dict, Union
+from typing import Any, Iterable, List, Tuple, Set, Dict, Union, Mapping
 from collections import defaultdict
 from hashlib import blake2b
 import numpy as np

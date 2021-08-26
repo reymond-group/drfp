@@ -1,4 +1,7 @@
 ![test workflow](https://github.com/reymond-group/drfp/actions/workflows/tests.yml/badge.svg)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5268144.svg)](https://doi.org/10.5281/zenodo.5268144)
+
+
 # DRFP
 
 

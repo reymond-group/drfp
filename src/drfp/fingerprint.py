@@ -5,6 +5,7 @@ import numpy as np
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 from rdkit import RDLogger
+from tqdm.auto import tqdm
 
 RDLogger.DisableLog("rdApp.*")
 
@@ -206,6 +207,8 @@ class DrfpEncoder:
         radius: int = 3,
         rings: bool = True,
         mapping: bool = False,
+        use_tqdm: bool = True,
+        tqdm_kwargs: Optional[Mapping[str, Any]] = None,
     ) -> Union[List[np.ndarray], Tuple[List[np.ndarray], Dict[int, Set[str]]]]:
         """Encodes a list of reaction SMILES using the drfp fingerprint.
 
@@ -216,6 +219,8 @@ class DrfpEncoder:
             radius: The maximum radius of a substructure
             rings: Whether to include full rings as substructures
             mapping: Return a feature to substructure mapping in addition to the fingerprints
+            use_tqdm: Should a progress bar be displayed while encoding the given reactions?
+            tqdm_kwargs: If using :mod:`tqdm`, override default kwargs.
 
         Returns:
             A list of drfp fingerprints or, if mapping is enabled, a tuple containing a list of drfp fingerprints and a mapping dict.
@@ -223,9 +228,18 @@ class DrfpEncoder:
         if isinstance(X, str):
             X = [X]
 
+        _tqdm_kwargs = dict(
+            unit_scale=True, 
+            unit="reaction", 
+            desc="encoding reactions", 
+            disable=not use_tqdm,
+        )
+        if tqdm_kwargs:
+            _tqdm_kwargs.update(tqdm_kwargs)
+
         result = []
         result_map = defaultdict(set)
-        for _, x in enumerate(X):
+        for x in tqdm(X, **_tqdm_kwargs):
             hashed_diff, smiles_diff = DrfpEncoder.internal_encode(
                 x, min_radius=min_radius, radius=radius, rings=rings
             )

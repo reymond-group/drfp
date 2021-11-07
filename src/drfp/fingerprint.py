@@ -153,10 +153,13 @@ class DrfpEncoder:
             for s in sh:
                 left_shingles.add(s)
 
-        s = right_shingles.symmetric_difference(left_shingles)
+        # s = right_shingles.symmetric_difference(left_shingles)
 
-        if len(s) == 0:
-            s = left_shingles
+        # if len(s) == 0:
+        #     s = left_shingles
+
+        # Reviewer comment: What happens when just subtracting reactants from products.
+        s = right_shingles - left_shingles
 
         return DrfpEncoder.hash(list(s)), list(s)
 

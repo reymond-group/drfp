@@ -23,7 +23,7 @@ def get_pred(
 
     model = keras.models.Sequential(
         [
-            keras.layers.Dense(512, input_dim=len(train_X[0]), activation=tf.nn.tanh),
+            keras.layers.Dense(1664, input_dim=len(train_X[0]), activation=tf.nn.tanh),
             keras.layers.Dense(n_classes, activation=tf.nn.softmax),
         ]
     )
@@ -37,7 +37,7 @@ def get_pred(
     model.fit(
         train_X,
         train_y,
-        epochs=40,
+        epochs=10,
         batch_size=64,
     )
 
@@ -58,34 +58,11 @@ def get_cache_confusion_matrix(
 
 
 @click.command()
-@click.argument("input_data_filepath", type=click.Path(exists=True))
-@click.argument("input_train_labels_filepath", type=click.Path(exists=True))
-@click.argument("input_test_labels_filepath", type=click.Path(exists=True))
-def main(input_data_filepath, input_train_labels_filepath, input_test_labels_filepath):
-    X_train = []
-    X_test = []
-
-    with open(input_data_filepath, "rb") as f:
-        data = pickle.load(f)
-        X_train = data["train_valid"]
-        X_test = data["test"]
-
-    X_train = np.stack(X_train)
-    X_test = np.stack(X_test)
-
-    y_train = []
-    y_test = []
-
-    with open(input_train_labels_filepath, "r") as f:
-        for line in f:
-            y_train.append(int(line.strip()))
-
-    with open(input_test_labels_filepath, "r") as f:
-        for line in f:
-            y_test.append(int(line.strip()))
-
-    y_train = np.array(y_train)
-    y_test = np.array(y_test)
+@click.argument("input_train_filepath", type=click.Path(exists=True))
+@click.argument("input_test_filepath", type=click.Path(exists=True))
+def main(input_train_filepath, input_test_filepath):
+    X_train, y_train, _ = pickle.load(open(input_train_filepath, "rb"))
+    X_test, y_test, _ = pickle.load(open(input_test_filepath, "rb"))
 
     le = LabelEncoder()
     le.fit(np.concatenate([y_train, y_test]))
@@ -99,12 +76,15 @@ def main(input_data_filepath, input_train_labels_filepath, input_test_labels_fil
     X_train = X_train[train_indices]
     y_train = y_train[train_indices]
 
+    y_train = le.transform(y_train)
+    y_test = le.transform(y_test)
+
     y_pred = get_pred(X_train, y_train, X_test, n_classes)
 
     cm = get_cache_confusion_matrix(
-        "drfp-tpl",
-        y_test,
-        y_pred,
+        "drfp-schneider-cm",
+        le.inverse_transform(y_test),
+        le.inverse_transform(y_pred),
     )
 
     print(f"Accuracy : {cm.overall_stat['Overall ACC']:.3f}")

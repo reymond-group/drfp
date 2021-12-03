@@ -75,7 +75,7 @@ def main(input_train_filepath, input_test_filepath):
 
     X_train = X_train[train_indices]
     y_train = y_train[train_indices]
-
+    print(y_train)
     y_pred = get_pred(X_train, y_train, X_test, n_classes)
 
     cm = get_cache_confusion_matrix(

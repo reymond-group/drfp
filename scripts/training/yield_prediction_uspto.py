@@ -5,6 +5,10 @@ import numpy as np
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
+def save_results(set_name: str, split_id: str, file_name: str, ground_truth: np.ndarray, prediction: np.ndarray) -> None:
+    with open(f"{set_name}_{split_id}_{file_name}.csv", "w+") as f:
+        for gt, pred in zip(ground_truth, prediction):
+            f.write(f"{set_name},{split_id},{file_name},{gt},{pred}\n")
 
 def load_data(
     path_train: str,
@@ -45,7 +49,7 @@ def load_data(
 
 
 def predict_uspto_above():
-    uspto_root = Path(Path.home(), "data/drfp/uspto-drfp/")
+    uspto_root = Path("../../data/")
 
     X_train, y_train, X_valid, y_valid, X_test, y_test = load_data(
         Path(uspto_root, "uspto_yields_above_2048_3_true_train.pkl"),
@@ -71,12 +75,15 @@ def predict_uspto_above():
     )
 
     y_pred = model.predict(X_test, ntree_limit=model.best_ntree_limit)
+    y_pred[y_pred < 0.0] = 0.0
+
+    save_results("uspto", "above", "above", y_test, y_pred)
     r_squared = r2_score(y_test, y_pred)
     print(r_squared)
 
 
 def predict_uspto_below():
-    uspto_root = Path(Path.home(), "data/drfp/uspto-drfp/")
+    uspto_root = Path("../../data/")
 
     X_train, y_train, X_valid, y_valid, X_test, y_test = load_data(
         Path(uspto_root, "uspto_yields_below_2048_3_true_train.pkl"),
@@ -102,6 +109,9 @@ def predict_uspto_below():
     )
 
     y_pred = model.predict(X_test, ntree_limit=model.best_ntree_limit)
+    y_pred[y_pred < 0.0] = 0.0
+
+    save_results("uspto", "below", "below", y_test, y_pred)
     r_squared = r2_score(y_test, y_pred)
     print(r_squared)
 

@@ -78,6 +78,8 @@ def main(input_filepath, output_filepath, cols, sep, length, radius):
 
         df_split = df[df[cols[2]] == s]
 
+        print(f"{len(df_split)} reactions...")
+
         smiles = df_split[cols[0]].to_numpy()
         y = df_split[cols[1]].to_numpy()
 

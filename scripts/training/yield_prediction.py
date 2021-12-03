@@ -6,6 +6,11 @@ import numpy as np
 from xgboost import XGBRegressor
 from sklearn.metrics import r2_score
 
+def save_results(set_name: str, split_id: str, file_name: str, ground_truth: np.ndarray, prediction: np.ndarray) -> None:
+    with open(f"{set_name}_{split_id}_{file_name}.csv", "w+") as f:
+        for gt, pred in zip(ground_truth, prediction):
+            f.write(f"{set_name},{split_id},{file_name},{gt},{pred}\n")
+        
 
 def load_data(
     path: str, valid_frac: str = 0.1, split=2767
@@ -74,6 +79,9 @@ def predict_buchwald_hartwig_cv():
             )
 
             y_pred = model.predict(X_test, ntree_limit=model.best_ntree_limit)
+            y_pred[y_pred < 0.0] = 0.0
+
+            save_results("buchwald_hartwig_cv", split, sample_file, y_test, y_pred)
             r_squared = r2_score(y_test, y_pred)
             r2s.append(r_squared)
         print(f"{100 * round(split / 3955, 3)}%", sum(r2s) / len(r2s), stdev(r2s))
@@ -114,6 +122,9 @@ def predict_buchwald_hartwig_tests():
             )
 
             y_pred = model.predict(X_test, ntree_limit=model.best_ntree_limit)
+            y_pred[y_pred < 0.0] = 0.0
+
+            save_results("buchwald_hartwig_tests", sample_file, seed, y_test, y_pred)
             r_squared = r2_score(y_test, y_pred)
             r2s_all
             r2s.append(r_squared)
@@ -156,6 +167,9 @@ def predict_suzuki_miyaura():
             )
 
             y_pred = model.predict(X_test, ntree_limit=model.best_ntree_limit)
+            y_pred[y_pred < 0.0] = 0.0
+
+            save_results("suzuki_miyaura", split, sample_file, y_test, y_pred)
             r_squared = r2_score(y_test, y_pred)
             print(f"Test {i + 1}", r_squared)
             r2s.append(r_squared)

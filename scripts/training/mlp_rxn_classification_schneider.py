@@ -61,8 +61,8 @@ def get_cache_confusion_matrix(
 @click.argument("input_train_filepath", type=click.Path(exists=True))
 @click.argument("input_test_filepath", type=click.Path(exists=True))
 def main(input_train_filepath, input_test_filepath):
-    X_train, y_train, _ = pickle.load(open(input_train_filepath, "rb"))
-    X_test, y_test, _ = pickle.load(open(input_test_filepath, "rb"))
+    X_train, y_train, smiles_train = pickle.load(open(input_train_filepath, "rb"))
+    X_test, y_test, smiles_test = pickle.load(open(input_test_filepath, "rb"))
 
     le = LabelEncoder()
     le.fit(np.concatenate([y_train, y_test]))
@@ -80,6 +80,15 @@ def main(input_train_filepath, input_test_filepath):
     y_test = le.transform(y_test)
 
     y_pred = get_pred(X_train, y_train, X_test, n_classes)
+
+    y_test_classes = le.inverse_transform(y_test),
+    y_pred_classes = le.inverse_transform(y_pred),
+
+    with open("drfp-schneider-errors.csv", "w+") as f:
+        f.write(f"class_gt,class_pred,smiles\n")
+        for gt, pred, smiles in zip(y_test_classes[0], y_pred_classes[0], smiles_test):
+            if gt != pred:
+                f.write(f"{gt},{pred},{smiles}\n")
 
     cm = get_cache_confusion_matrix(
         "drfp-schneider-cm",

@@ -14,6 +14,8 @@ __pycache__/*
 */.ipynb_checkpoints/*
 .DS_Store
 *.pkl
+*.drfp
+*.html
 
 # Project files
 .ropeproject

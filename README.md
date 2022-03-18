@@ -7,6 +7,8 @@
 
 An NLP-inspired chemical reaction fingerprint based on basic set arithmetic.
 
+Read the associated [open access article](https://pubs.rsc.org/en/content/articlehtml/2022/dd/d1dd00006c)
+
 
 ## Description
 
@@ -67,4 +69,12 @@ The library contains the class `DrfpEncoder` with one public method `encode`.
 Want to reproduce the results in our paper? You can find all the data in the `data` folder and encoding and training scripts in the `scripts` folder.
 
 # Cite Us
->Probst, D., Schwaller, P., & Reymond, J.-L. (2021). Reaction classification and yield prediction using the differential reaction fingerprint DRFP. doi:10.33774/chemrxiv-2021-mc870
+```
+@article{probst2022reaction,
+  title={Reaction Classification and Yield Prediction using the Differential Reaction Fingerprint DRFP},
+  author={Probst, Daniel and Schwaller, Philippe and Reymond, Jean-Louis},
+  journal={Digital Discovery},
+  year={2022},
+  publisher={Royal Society of Chemistry}
+}
+```

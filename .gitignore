@@ -14,11 +14,9 @@ __pycache__/*
 */.ipynb_checkpoints/*
 .DS_Store
 *.pkl
-<<<<<<< HEAD
+!models/*/*.pkl
 *.drfp
 *.html
-=======
->>>>>>> 116e3ae9a5dfdff76539e79be06eb3e70e90e588
 
 # Project files
 .ropeproject

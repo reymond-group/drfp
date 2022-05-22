@@ -6,11 +6,18 @@ import numpy as np
 from xgboost import XGBRegressor
 from sklearn.metrics import r2_score
 
-def save_results(set_name: str, split_id: str, file_name: str, ground_truth: np.ndarray, prediction: np.ndarray) -> None:
+
+def save_results(
+    set_name: str,
+    split_id: str,
+    file_name: str,
+    ground_truth: np.ndarray,
+    prediction: np.ndarray,
+) -> None:
     with open(f"{set_name}_{split_id}_{file_name}.csv", "w+") as f:
         for gt, pred in zip(ground_truth, prediction):
             f.write(f"{set_name},{split_id},{file_name},{gt},{pred}\n")
-        
+
 
 def load_data(
     path: str, valid_frac: str = 0.1, split=2767
@@ -21,7 +28,7 @@ def load_data(
             "rb",
         )
     )
-
+    print(len(X))
     X_test = X[split:]
     X_train = X[:split]
 
@@ -179,8 +186,8 @@ def predict_suzuki_miyaura():
 
 def main():
     predict_buchwald_hartwig_cv()
-    predict_buchwald_hartwig_tests()
-    predict_suzuki_miyaura()
+    # predict_buchwald_hartwig_tests()
+    # predict_suzuki_miyaura()
 
 
 if __name__ == "__main__":

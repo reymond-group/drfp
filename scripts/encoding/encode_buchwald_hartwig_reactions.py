@@ -68,11 +68,11 @@ y_tests = []
 r2_scores = []
 rmse_scores = []
 
-for name in NAMES:
+for name in ["FullCV_01"]:
     fingerprints_file_name = f"../../data/{name}-2048-3-true.pkl"
     map_file_name = f"../../data/{name}-2048-3-true.map.pkl"
 
-    if Path(fingerprints_file_name).exists():
+    if False:  # Path(fingerprints_file_name).exists():
         X, y, X_test, y_test = pickle.load(open(fingerprints_file_name, "rb"))
 
     else:
@@ -88,6 +88,8 @@ for name in NAMES:
 
         data.columns = ["text", "labels"]
 
+        print(data.text[0])
+        print(data.labels[0])
         X, mapping = DrfpEncoder.encode(
             data.text.to_numpy(),
             n_folded_length=2048,
@@ -108,3 +110,5 @@ for name in NAMES:
 
         with open(fingerprints_file_name, "wb+") as f:
             pickle.dump((X, y), f, protocol=pickle.HIGHEST_PROTOCOL)
+
+# %%

@@ -155,9 +155,6 @@ class DrfpEncoder:
 
         s = right_shingles.symmetric_difference(left_shingles)
 
-        if len(s) == 0:
-            s = left_shingles
-
         return DrfpEncoder.hash(list(s)), list(s)
 
     @staticmethod

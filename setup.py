@@ -8,12 +8,17 @@
 """
 from setuptools import setup
 
+
+def local_scheme(version):
+    return ""
+
+
 if __name__ == "__main__":
     try:
         setup(
             use_scm_version={
-                "version_scheme": "no-guess-dev",
-                "local_scheme": "node-and-date",
+                "version_scheme": "python-simplified-semver",
+                "local_scheme": local_scheme,
             }
         )
     except:  # noqa

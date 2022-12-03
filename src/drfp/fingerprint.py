@@ -26,8 +26,12 @@ class DrfpEncoder:
 
     @staticmethod
     def shingling_from_mol(
-        in_mol: Mol, radius: int = 3, rings: bool = True, min_radius: int = 0
-    ) -> List[str]:
+        in_mol: Mol,
+        radius: int = 3,
+        rings: bool = True,
+        min_radius: int = 0,
+        get_atom_indices: bool = False,
+    ) -> Union[List[str], Tuple[List[str], Dict[str, List[Set[int]]]]]:
         """Creates a molecular shingling from a RDKit molecule (rdkit.Chem.rdchem.Mol).
 
         Arguments:
@@ -41,28 +45,40 @@ class DrfpEncoder:
         """
 
         shingling = []
+        atom_indices = defaultdict(list)
 
         if rings:
             for ring in AllChem.GetSymmSSSR(in_mol):
                 bonds = set()
                 ring = list(ring)
+                indices = set()
                 for i in ring:
                     for j in ring:
                         if i != j:
+                            indices.add(i)
+                            indices.add(j)
                             bond = in_mol.GetBondBetweenAtoms(i, j)
                             if bond is not None:
                                 bonds.add(bond.GetIdx())
-                shingling.append(
-                    AllChem.MolToSmiles(
-                        AllChem.PathToSubmol(in_mol, list(bonds)),
-                        canonical=True,
-                        allHsExplicit=True,
-                    ).encode("utf-8")
-                )
+
+                ngram = AllChem.MolToSmiles(
+                    AllChem.PathToSubmol(in_mol, list(bonds)),
+                    canonical=True,
+                    allHsExplicit=True,
+                ).encode("utf-8")
+
+                shingling.append(ngram)
+
+                if get_atom_indices:
+                    atom_indices[ngram].append(indices)
 
         if min_radius == 0:
             for i, atom in enumerate(in_mol.GetAtoms()):
-                shingling.append(atom.GetSmarts().encode("utf-8"))
+                ngram = atom.GetSmarts().encode("utf-8")
+                shingling.append(ngram)
+
+                if get_atom_indices:
+                    atom_indices[ngram].append(set([atom.GetIdx()]))
 
         for index, _ in enumerate(in_mol.GetAtoms()):
             for i in range(1, radius + 1):
@@ -82,10 +98,15 @@ class DrfpEncoder:
 
                 if smiles != "":
                     shingling.append(smiles.encode("utf-8"))
+                    if get_atom_indices:
+                        atom_indices[smiles.encode("utf-8")].append(set(amap.keys()))
 
         # Set ensures that the same shingle is not hashed multiple times
         # (which would not change the hash, since there would be no new minima)
-        return list(set(shingling))
+        if get_atom_indices:
+            return list(set(shingling)), atom_indices
+        else:
+            return list(set(shingling))
 
     @staticmethod
     def internal_encode(
@@ -93,7 +114,11 @@ class DrfpEncoder:
         radius: int = 3,
         min_radius: int = 0,
         rings: bool = True,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+        get_atom_indices: bool = False,
+    ) -> Union[
+        Tuple[np.ndarray, np.ndarray],
+        Tuple[np.ndarray, np.ndarray, Dict[str, List[Dict[str, List[Set[int]]]]]],
+    ]:
         """Creates an drfp array from a reaction SMILES string.
 
         Arguments:
@@ -105,6 +130,10 @@ class DrfpEncoder:
         Returns:
             A tuple with two arrays, the first containing the drfp hash values, the second the substructure SMILES
         """
+
+        atom_indices = {}
+        atom_indices["reactants"] = []
+        atom_indices["products"] = []
 
         sides = in_smiles.split(">")
         if len(sides) < 3:
@@ -125,14 +154,25 @@ class DrfpEncoder:
             mol = AllChem.MolFromSmiles(l)
 
             if not mol:
+                atom_indices["reactants"].append(None)
                 continue
 
-            sh = DrfpEncoder.shingling_from_mol(
-                mol,
-                radius=radius,
-                rings=rings,
-                min_radius=min_radius,
-            )
+            if get_atom_indices:
+                sh, ai = DrfpEncoder.shingling_from_mol(
+                    mol,
+                    radius=radius,
+                    rings=rings,
+                    min_radius=min_radius,
+                    get_atom_indices=True,
+                )
+                atom_indices["reactants"].append(ai)
+            else:
+                sh = DrfpEncoder.shingling_from_mol(
+                    mol,
+                    radius=radius,
+                    rings=rings,
+                    min_radius=min_radius,
+                )
 
             for s in sh:
                 right_shingles.add(s)
@@ -141,21 +181,35 @@ class DrfpEncoder:
             mol = AllChem.MolFromSmiles(r)
 
             if not mol:
+                atom_indices["products"].append(None)
                 continue
 
-            sh = DrfpEncoder.shingling_from_mol(
-                mol,
-                radius=radius,
-                rings=rings,
-                min_radius=min_radius,
-            )
+            if get_atom_indices:
+                sh, ai = DrfpEncoder.shingling_from_mol(
+                    mol,
+                    radius=radius,
+                    rings=rings,
+                    min_radius=min_radius,
+                    get_atom_indices=True,
+                )
+                atom_indices["products"].append(ai)
+            else:
+                sh = DrfpEncoder.shingling_from_mol(
+                    mol,
+                    radius=radius,
+                    rings=rings,
+                    min_radius=min_radius,
+                )
 
             for s in sh:
                 left_shingles.add(s)
 
         s = right_shingles.symmetric_difference(left_shingles)
 
-        return DrfpEncoder.hash(list(s)), list(s)
+        if get_atom_indices:
+            return DrfpEncoder.hash(list(s)), list(s), atom_indices
+        else:
+            return DrfpEncoder.hash(list(s)), list(s)
 
     @staticmethod
     def hash(shingling: List[str]) -> np.ndarray:
@@ -203,7 +257,13 @@ class DrfpEncoder:
         radius: int = 3,
         rings: bool = True,
         mapping: bool = False,
-    ) -> Union[List[np.ndarray], Tuple[List[np.ndarray], Dict[int, Set[str]]]]:
+        atom_index_mapping: bool = False,
+    ) -> Union[
+        List[np.ndarray],
+        Tuple[List[np.ndarray], Dict[int, Set[str]]],
+        Tuple[List[np.ndarray], Dict[int, Set[str]]],
+        List[Dict[str, List[Dict[str, List[Set[int]]]]]],
+    ]:
         """Encodes a list of reaction SMILES using the drfp fingerprint.
 
         Args:
@@ -220,12 +280,27 @@ class DrfpEncoder:
         if isinstance(X, str):
             X = [X]
 
+        # If mapping is required for atom_index_mapping
+        if atom_index_mapping:
+            mapping = True
+
         result = []
         result_map = defaultdict(set)
+        atom_index_maps = []
+
         for _, x in enumerate(X):
-            hashed_diff, smiles_diff = DrfpEncoder.internal_encode(
-                x, min_radius=min_radius, radius=radius, rings=rings
-            )
+            if atom_index_mapping:
+                hashed_diff, smiles_diff, atom_index_map = DrfpEncoder.internal_encode(
+                    x,
+                    min_radius=min_radius,
+                    radius=radius,
+                    rings=rings,
+                    get_atom_indices=True,
+                )
+            else:
+                hashed_diff, smiles_diff = DrfpEncoder.internal_encode(
+                    x, min_radius=min_radius, radius=radius, rings=rings
+                )
 
             difference_folded, on_bits = DrfpEncoder.fold(
                 hashed_diff,
@@ -238,9 +313,40 @@ class DrfpEncoder:
                         smiles_diff[unfolded_index].decode("utf-8")
                     )
 
+            if atom_index_mapping:
+                aidx_bit_map = {}
+                aidx_bit_map["reactants"] = []
+                aidx_bit_map["products"] = []
+
+                for reactant in atom_index_map["reactants"]:
+                    r = defaultdict(list)
+                    for key, value in reactant.items():
+                        if key in smiles_diff:
+                            idx = smiles_diff.index(key)
+                            r[on_bits[idx]].append(value)
+                    aidx_bit_map["reactants"].append(r)
+
+                for product in atom_index_map["products"]:
+                    r = defaultdict(list)
+                    for key, value in product.items():
+                        if key in smiles_diff:
+                            idx = smiles_diff.index(key)
+                            r[on_bits[idx]].append(value)
+                    aidx_bit_map["products"].append(r)
+
+                atom_index_maps.append(aidx_bit_map)
+
             result.append(difference_folded)
 
+        r = [result]
+
         if mapping:
-            return result, result_map
+            r.append(result_map)
+
+        if atom_index_mapping:
+            r.append(atom_index_maps)
+
+        if len(r) == 1:
+            return r[0]
         else:
-            return result
+            return tuple(r)

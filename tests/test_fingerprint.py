@@ -185,3 +185,12 @@ def test_encode_mapping(rxn):
     fp, mapping = DrfpEncoder.encode([rxn, rxn], mapping=True)
     assert len(fp) == 2
     assert len(mapping) == 39
+
+
+def test_encode_atom_index_mapping(rxn):
+    fp, _, aidx_mapping = DrfpEncoder.encode(rxn, atom_index_mapping=True)
+    assert len(fp) == 1
+    assert len(fp[0]) == 2048
+    assert len(aidx_mapping) == 1
+    assert len(aidx_mapping[0]) == 2
+    assert len(aidx_mapping[0]["reactants"]) == 5

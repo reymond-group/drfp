@@ -1,9 +1,7 @@
 name: drfp-environment
 channels:
-  - rdkit
   - conda-forge
 dependencies:
-  - rdkit
   - numpy
   - matplotlib
   - pandas
@@ -12,4 +10,5 @@ dependencies:
   - pip
   - pip:
     - drfp
+    - rdkit-pypi
     - shap

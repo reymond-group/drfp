@@ -31,6 +31,7 @@ class DrfpEncoder:
         rings: bool = True,
         min_radius: int = 0,
         get_atom_indices: bool = False,
+        root_central_atom: bool = True,
     ) -> Union[List[str], Tuple[List[str], Dict[str, List[Set[int]]]]]:
         """Creates a molecular shingling from a RDKit molecule (rdkit.Chem.rdchem.Mol).
 
@@ -89,12 +90,21 @@ class DrfpEncoder:
                 if index not in amap:
                     continue
 
-                smiles = AllChem.MolToSmiles(
-                    submol,
-                    rootedAtAtom=amap[index],
-                    canonical=True,
-                    allHsExplicit=True,
-                )
+                smiles = ""
+
+                if root_central_atom:
+                    smiles = AllChem.MolToSmiles(
+                        submol,
+                        rootedAtAtom=amap[index],
+                        canonical=True,
+                        allHsExplicit=True,
+                    )
+                else:
+                    smiles = AllChem.MolToSmiles(
+                        submol,
+                        canonical=True,
+                        allHsExplicit=True,
+                    )
 
                 if smiles != "":
                     shingling.append(smiles.encode("utf-8"))
@@ -115,6 +125,7 @@ class DrfpEncoder:
         min_radius: int = 0,
         rings: bool = True,
         get_atom_indices: bool = False,
+        root_central_atom: bool = True,
     ) -> Union[
         Tuple[np.ndarray, np.ndarray],
         Tuple[np.ndarray, np.ndarray, Dict[str, List[Dict[str, List[Set[int]]]]]],
@@ -164,6 +175,7 @@ class DrfpEncoder:
                     rings=rings,
                     min_radius=min_radius,
                     get_atom_indices=True,
+                    root_central_atom=root_central_atom,
                 )
                 atom_indices["reactants"].append(ai)
             else:
@@ -172,6 +184,7 @@ class DrfpEncoder:
                     radius=radius,
                     rings=rings,
                     min_radius=min_radius,
+                    root_central_atom=root_central_atom,
                 )
 
             for s in sh:
@@ -191,6 +204,7 @@ class DrfpEncoder:
                     rings=rings,
                     min_radius=min_radius,
                     get_atom_indices=True,
+                    root_central_atom=root_central_atom,
                 )
                 atom_indices["products"].append(ai)
             else:
@@ -199,6 +213,7 @@ class DrfpEncoder:
                     radius=radius,
                     rings=rings,
                     min_radius=min_radius,
+                    root_central_atom=root_central_atom,
                 )
 
             for s in sh:
@@ -258,6 +273,7 @@ class DrfpEncoder:
         rings: bool = True,
         mapping: bool = False,
         atom_index_mapping: bool = False,
+        root_central_atom: bool = True,
     ) -> Union[
         List[np.ndarray],
         Tuple[List[np.ndarray], Dict[int, Set[str]]],
@@ -296,10 +312,15 @@ class DrfpEncoder:
                     radius=radius,
                     rings=rings,
                     get_atom_indices=True,
+                    root_central_atom=root_central_atom,
                 )
             else:
                 hashed_diff, smiles_diff = DrfpEncoder.internal_encode(
-                    x, min_radius=min_radius, radius=radius, rings=rings
+                    x,
+                    min_radius=min_radius,
+                    radius=radius,
+                    rings=rings,
+                    root_central_atom=root_central_atom,
                 )
 
             difference_folded, on_bits = DrfpEncoder.fold(

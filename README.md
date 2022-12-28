@@ -64,6 +64,9 @@ The library contains the class `DrfpEncoder` with one public method `encode`.
 | `radius` | The maximum radius of a substructure | `int` | `3` |
 | `rings` | Whether to include full rings as substructures | `bool` | `True` |
 | `mapping` |  Return a feature to substructure mapping in addition to the fingerprints. If true, the return signature of this method is `Tuple[List[np.ndarray], Dict[int, Set[str]]]` | `bool` | `False` |
+| `atom_index_mapping` | Return the atom indices of mapped substructures for each reaction | `bool` | `False` |
+| `root_central_atom` |Whether to root the central atom of substructures when generating SMILES | `bool` | `True` |
+| `show_progress_bar` | Whether to show a progress bar when encoding reactions | `bool` | `False` |
 
 # Reproduce
 Want to reproduce the results in our paper? You can find all the data in the `data` folder and encoding and training scripts in the `scripts` folder.

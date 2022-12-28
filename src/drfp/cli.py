@@ -35,6 +35,9 @@ from drfp import DrfpEncoder
     default=False,
     help="Whether or not to also export a mapping to help interpret the fingerprint.",
 )
+@click.option(
+    "--silent", is_flag=True, help="Hide all output such as the progress bar."
+)
 def main(
     input_file: TextIO,
     output_file: TextIO,
@@ -43,6 +46,7 @@ def main(
     radius: int,
     rings: True,
     mapping: False,
+    silent: False,
 ):
     """Creates fingerprints from a file containing one reaction SMILES per line.
 
@@ -54,16 +58,30 @@ def main(
     for line in input_file:
         smiles.append(line.strip())
 
+    show_progress_bar = not silent
+
     fps = None
     fragment_map = None
 
     if mapping:
         fps, fragment_map = DrfpEncoder.encode(
-            smiles, n_folded_length, min_radius, radius, rings, mapping
+            smiles,
+            n_folded_length,
+            min_radius,
+            radius,
+            rings,
+            mapping,
+            show_progress_bar=show_progress_bar,
         )
     else:
         fps = DrfpEncoder.encode(
-            smiles, n_folded_length, min_radius, radius, rings, mapping
+            smiles,
+            n_folded_length,
+            min_radius,
+            radius,
+            rings,
+            mapping,
+            show_progress_bar=show_progress_bar,
         )
 
     pickle.dump(fps, output_file)

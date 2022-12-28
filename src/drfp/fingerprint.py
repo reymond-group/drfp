@@ -5,6 +5,7 @@ import numpy as np
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 from rdkit import RDLogger
+from tqdm import tqdm
 
 RDLogger.DisableLog("rdApp.*")
 
@@ -274,6 +275,7 @@ class DrfpEncoder:
         mapping: bool = False,
         atom_index_mapping: bool = False,
         root_central_atom: bool = True,
+        show_progress_bar: bool = False,
     ) -> Union[
         List[np.ndarray],
         Tuple[List[np.ndarray], Dict[int, Set[str]]],
@@ -289,12 +291,17 @@ class DrfpEncoder:
             radius: The maximum radius of a substructure
             rings: Whether to include full rings as substructures
             mapping: Return a feature to substructure mapping in addition to the fingerprints
+            atom_index_mapping: Return the atom indices of mapped substructures for each reaction
+            root_central_atom: Whether to root the central atom of substructures when generating SMILES
+            show_progress_bar: Whether to show a progress bar when encoding reactions
 
         Returns:
             A list of drfp fingerprints or, if mapping is enabled, a tuple containing a list of drfp fingerprints and a mapping dict.
         """
         if isinstance(X, str):
             X = [X]
+
+        show_progress_bar = not show_progress_bar
 
         # If mapping is required for atom_index_mapping
         if atom_index_mapping:
@@ -304,7 +311,7 @@ class DrfpEncoder:
         result_map = defaultdict(set)
         atom_index_maps = []
 
-        for _, x in enumerate(X):
+        for _, x in tqdm(enumerate(X), total=len(X), disable=show_progress_bar):
             if atom_index_mapping:
                 hashed_diff, smiles_diff, atom_index_map = DrfpEncoder.internal_encode(
                     x,

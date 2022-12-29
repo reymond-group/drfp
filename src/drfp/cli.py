@@ -36,7 +36,9 @@ from drfp import DrfpEncoder
     help="Whether or not to also export a mapping to help interpret the fingerprint.",
 )
 @click.option("--hydrogens", is_flag=True, help="Include hydrogens explicitly.")
-@click.option("--root", is_flag=True, help="Root central atoms during substructure generation.")
+@click.option(
+    "--root", is_flag=True, help="Root central atoms during substructure generation."
+)
 @click.option(
     "--silent", is_flag=True, help="Hide all output such as the progress bar."
 )
@@ -46,11 +48,11 @@ def main(
     n_folded_length: int,
     min_radius: int,
     radius: int,
-    rings: True,
-    mapping: False,
-    hydrogens: False,
-    root: False,
-    silent: False,
+    rings: bool = True,
+    mapping: bool = False,
+    hydrogens: bool = False,
+    root: bool = False,
+    silent: bool = False,
 ):
     """Creates fingerprints from a file containing one reaction SMILES per line.
 
@@ -76,7 +78,7 @@ def main(
             rings,
             mapping,
             root_central_atom=root,
-            show_progress_bar=show_progress_bar
+            show_progress_bar=show_progress_bar,
             include_hydrogens=hydrogens,
         )
     else:

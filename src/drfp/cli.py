@@ -35,6 +35,8 @@ from drfp import DrfpEncoder
     default=False,
     help="Whether or not to also export a mapping to help interpret the fingerprint.",
 )
+@click.option("--hydrogens", is_flag=True, help="Include hydrogens explicitly.")
+@click.option("--root", is_flag=True, help="Root central atoms during substructure generation.")
 @click.option(
     "--silent", is_flag=True, help="Hide all output such as the progress bar."
 )
@@ -46,6 +48,8 @@ def main(
     radius: int,
     rings: True,
     mapping: False,
+    hydrogens: False,
+    root: False,
     silent: False,
 ):
     """Creates fingerprints from a file containing one reaction SMILES per line.
@@ -71,7 +75,9 @@ def main(
             radius,
             rings,
             mapping,
-            show_progress_bar=show_progress_bar,
+            root_central_atom=root,
+            show_progress_bar=show_progress_bar
+            include_hydrogens=hydrogens,
         )
     else:
         fps = DrfpEncoder.encode(
@@ -81,7 +87,9 @@ def main(
             radius,
             rings,
             mapping,
+            root_central_atom=root,
             show_progress_bar=show_progress_bar,
+            include_hydrogens=hydrogens,
         )
 
     pickle.dump(fps, output_file)

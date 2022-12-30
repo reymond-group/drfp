@@ -118,6 +118,10 @@ class DrfpEncoder:
                     if get_atom_indices:
                         atom_indices[smiles.encode("utf-8")].append(set(amap.keys()))
 
+        if not root_central_atom:
+            for key in atom_indices:
+                atom_indices[key] = list(set([frozenset(s) for s in atom_indices[key]]))
+
         # Set ensures that the same shingle is not hashed multiple times
         # (which would not change the hash, since there would be no new minima)
         if get_atom_indices:

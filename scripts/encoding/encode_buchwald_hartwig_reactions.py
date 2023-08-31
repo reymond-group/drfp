@@ -110,5 +110,3 @@ for name in ["FullCV_01"]:
 
         with open(fingerprints_file_name, "wb+") as f:
             pickle.dump((X, y), f, protocol=pickle.HIGHEST_PROTOCOL)
-
-# %%

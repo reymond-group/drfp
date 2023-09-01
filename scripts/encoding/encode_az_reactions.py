@@ -6,6 +6,7 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem import rdChemReactions
 from drfp import DrfpEncoder
+from tqdm import tqdm
 
 
 # %%
@@ -46,12 +47,15 @@ y_tests = []
 r2_scores = []
 rmse_scores = []
 
-for fold_idx in range(10):
+output = []
+
+for fold_idx in tqdm(range(10)):
     root_path = Path(__file__).resolve().parent
     az_path = Path(root_path, "../../data/az")
 
     train, valid, test = get_az_rxns(fold_idx)
 
+    output_splits = {}
     for data, split in [(train, "train"), (valid, "valid"), (test, "test")]:
         X, mapping = DrfpEncoder.encode(
             data.smiles.to_numpy(),
@@ -68,11 +72,11 @@ for fold_idx in range(10):
 
         y = data["yield"].to_numpy()
 
-        fingerprints_file_name = Path(az_path, f"{fold_idx}-{split}-2048-3-true.pkl")
-        map_file_name = Path(az_path, f"{fold_idx}-{split}-2048-3-true.map.pkl")
+        output_splits[split] = {"X": X, "y": y, "mapping": mapping}
 
-        with open(map_file_name, "wb+") as f:
-            pickle.dump(mapping, f, protocol=pickle.HIGHEST_PROTOCOL)
+    output.append(output_splits)
 
-        with open(fingerprints_file_name, "wb+") as f:
-            pickle.dump((X, y), f, protocol=pickle.HIGHEST_PROTOCOL)
+out_file_name = Path(az_path, f"az-2048-3-true.pkl")
+
+with open(out_file_name, "wb+") as f:
+    pickle.dump(output, f)

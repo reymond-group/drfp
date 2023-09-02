@@ -1,5 +1,6 @@
 # %%
 import pickle
+import gzip
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -59,10 +60,11 @@ for fold_idx in tqdm(range(10)):
     for data, split in [(train, "train"), (valid, "valid"), (test, "test")]:
         X, mapping = DrfpEncoder.encode(
             data.smiles.to_numpy(),
-            n_folded_length=2048,
+            n_folded_length=10240,
             radius=3,
             rings=True,
             mapping=True,
+            include_hydrogens=True,
         )
 
         X = np.asarray(
@@ -72,11 +74,20 @@ for fold_idx in tqdm(range(10)):
 
         y = data["yield"].to_numpy()
 
-        output_splits[split] = {"X": X, "y": y, "mapping": mapping}
+        output_splits[split] = {
+            "X": X,
+            "y": y,
+            "mapping": mapping,
+            "smiles": data.smiles.to_numpy(),
+        }
 
     output.append(output_splits)
 
 out_file_name = Path(az_path, f"az-2048-3-true.pkl")
+out_file_name_gz = Path(az_path, f"az-2048-3-true.pkl.gz")
 
 with open(out_file_name, "wb+") as f:
+    pickle.dump(output, f)
+
+with gzip.open(out_file_name_gz, "wb+") as f:
     pickle.dump(output, f)

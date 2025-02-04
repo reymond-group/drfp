@@ -37,6 +37,7 @@ dev = [
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
     "tox>=4.24.1",
+    "ruff>=0.9.4",
 ]
 
 
@@ -61,12 +62,13 @@ testpaths = ["tests"]
 norecursedirs = ["dist", "build", ".tox"]
 
 [tool.ruff]
-line-length = 88
-extend-ignore = ["E203", "W503"]
-exclude = [
-    ".tox",
-    "build",
-    "dist",
-    ".eggs",
-    "docs/conf.py",
-]
+line-length = 127
+output-format = "github"
+show-fixes = true
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

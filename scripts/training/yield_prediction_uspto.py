@@ -5,10 +5,12 @@ import numpy as np
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
+
 def save_results(set_name: str, split_id: str, file_name: str, ground_truth: np.ndarray, prediction: np.ndarray) -> None:
     with open(f"{set_name}_{split_id}_{file_name}.csv", "w+") as f:
         for gt, pred in zip(ground_truth, prediction):
             f.write(f"{set_name},{split_id},{file_name},{gt},{pred}\n")
+
 
 def load_data(
     path_train: str,
@@ -22,9 +24,7 @@ def load_data(
         )
     )
 
-    subset_indices = np.random.choice(
-        np.arange(len(X_train)), int(1.0 * len(X_train)), replace=False
-    )
+    subset_indices = np.random.choice(np.arange(len(X_train)), int(1.0 * len(X_train)), replace=False)
     X_train = X_train[subset_indices]
     y_train = y_train[subset_indices]
 
@@ -35,9 +35,7 @@ def load_data(
         )
     )
 
-    valid_indices = np.random.choice(
-        np.arange(len(X_train)), int(valid_frac * len(X_train)), replace=False
-    )
+    valid_indices = np.random.choice(np.arange(len(X_train)), int(valid_frac * len(X_train)), replace=False)
     X_valid = X_train[valid_indices]
     y_valid = y_train[valid_indices]
 

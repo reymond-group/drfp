@@ -23,9 +23,7 @@ def load_data(
     y_train = y[:split]
 
     np.random.seed(42)
-    valid_indices = np.random.choice(
-        np.arange(len(X_train)), int(valid_frac * len(X_train)), replace=False
-    )
+    valid_indices = np.random.choice(np.arange(len(X_train)), int(valid_frac * len(X_train)), replace=False)
 
     X_valid = X_train[valid_indices]
     y_valid = y_train[valid_indices]
@@ -64,9 +62,7 @@ def buchwald_hartwig_model():
         verbose=False,
     )
 
-    model.save_model(
-        Path(buchwald_hartwig_yield_models, "buchwald-hartwig-xgb-model.json")
-    )
+    model.save_model(Path(buchwald_hartwig_yield_models, "buchwald-hartwig-xgb-model.json"))
 
 
 def main():

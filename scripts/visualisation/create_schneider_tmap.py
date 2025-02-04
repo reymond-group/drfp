@@ -23,6 +23,7 @@ CFG_TMAP.sl_scaling_type = tm.ScalingType.RelativeToDesiredLength
 CFG_TMAP.node_size = 1 / 45
 CFG_TMAP.mmm_repeats = 1
 
+
 def main():
     dims = 2048
     tmp_file = "knn.pkl"
@@ -77,7 +78,6 @@ def main():
 
     plt.scatter(x, y, s=2.5, c=y_values, zorder=2, cmap="tab10")
     plt.show()
-
 
 
 if __name__ == "__main__":

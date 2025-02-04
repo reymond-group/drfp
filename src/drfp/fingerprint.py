@@ -88,9 +88,7 @@ class DrfpEncoder:
 
         for index, _ in enumerate(in_mol.GetAtoms()):
             for i in range(1, radius + 1):
-                p = AllChem.FindAtomEnvironmentOfRadiusN(
-                    in_mol, i, index, useHs=include_hydrogens
-                )
+                p = AllChem.FindAtomEnvironmentOfRadiusN(in_mol, i, index, useHs=include_hydrogens)
                 amap = {}
                 submol = AllChem.PathToSubmol(in_mol, p, atomMap=amap)
 
@@ -160,9 +158,7 @@ class DrfpEncoder:
 
         sides = in_smiles.split(">")
         if len(sides) < 3:
-            raise NoReactionError(
-                f"The following is not a valid reaction SMILES: '{in_smiles}'"
-            )
+            raise NoReactionError(f"The following is not a valid reaction SMILES: '{in_smiles}'")
 
         if len(sides[1]) > 0:
             sides[0] += "." + sides[1]
@@ -265,9 +261,7 @@ class DrfpEncoder:
         return np.array(hash_values, dtype=np.int32)
 
     @staticmethod
-    def fold(
-        hash_values: np.ndarray, length: int = 2048
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    def fold(hash_values: np.ndarray, length: int = 2048) -> Tuple[np.ndarray, np.ndarray]:
         """Folds the hash values to a binary vector of a given length.
 
         Arguments:
@@ -359,9 +353,7 @@ class DrfpEncoder:
 
             if mapping:
                 for unfolded_index, folded_index in enumerate(on_bits):
-                    result_map[folded_index].add(
-                        smiles_diff[unfolded_index].decode("utf-8")
-                    )
+                    result_map[folded_index].add(smiles_diff[unfolded_index].decode("utf-8"))
 
             if atom_index_mapping:
                 aidx_bit_map = {}

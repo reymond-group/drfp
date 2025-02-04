@@ -244,7 +244,7 @@ class DrfpEncoder:
 
     @staticmethod
     def hash(shingling: List[str]) -> np.ndarray:
-        """Directly hash all the SMILES in a shingling to a 32-bit integerself.
+        """Directly hash all the SMILES in a shingling to a 32-bit integer.
 
         Arguments:
             shingling: A list of n-grams
@@ -252,11 +252,15 @@ class DrfpEncoder:
         Returns:
             A list of hashed n-grams
         """
-
         hash_values = []
 
         for t in shingling:
-            hash_values.append(int(blake2b(t, digest_size=4).hexdigest(), 16))
+            # Convert to signed 32-bit by taking modulo 2^32 and subtracting 2^32 if >= 2^31
+            h = int(blake2b(t, digest_size=4).hexdigest(), 16)
+            h = h & 0xFFFFFFFF  # Ensure 32-bit
+            if h >= 0x80000000:  # If >= 2^31
+                h -= 0x100000000  # Subtract 2^32 to make negative
+            hash_values.append(h)
 
         return np.array(hash_values, dtype=np.int32)
 

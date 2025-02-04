@@ -22,9 +22,9 @@ jobs:
     - name: Install dependencies
       run: |
         uv sync
-    - name: Lint with ruff
+    - name: Run pre-commit
       run: |
-        uv run ruff check --output-format=github .
+        uv run pre-commit run --all-files
     - name: Test with tox
       run: |
         uv run tox

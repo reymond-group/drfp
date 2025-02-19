@@ -74,6 +74,19 @@ for fold_idx in tqdm(range(10)):
 
         y = data["yield"].to_numpy()
 
+        X_props = data.drop(
+            columns=[
+                "yield",
+                "reactant_smiles",
+                "solvent_smiles",
+                "base_smiles",
+                "product_smiles",
+                "id",
+            ]
+        ).to_numpy()
+
+        X = np.concatenate((X, X_props), axis=1)
+
         output_splits[split] = {
             "X": X,
             "y": y,
@@ -83,8 +96,8 @@ for fold_idx in tqdm(range(10)):
 
     output.append(output_splits)
 
-out_file_name = Path(az_path, f"az-2048-3-true.pkl")
-out_file_name_gz = Path(az_path, f"az-2048-3-true.pkl.gz")
+out_file_name = Path(az_path, f"az-10240-3-true-props.pkl")
+out_file_name_gz = Path(az_path, f"az-10240-3-true-props.pkl.gz")
 
 with open(out_file_name, "wb+") as f:
     pickle.dump(output, f)

@@ -29,6 +29,7 @@ def predict_az():
     maes = []
 
     for i, split in enumerate(data):
+        print(f"Evaluating split {i+1}/10 ...")
         X_train, y_train, X_valid, y_valid, X_test, y_test = (
             split["train"]["X"],
             split["train"]["y"],
@@ -42,6 +43,7 @@ def predict_az():
         model = XGBRegressor(
             n_estimators=999999,
             learning_rate=0.01,
+            early_stopping_rounds=10,
             max_depth=12,
             min_child_weight=6,
             colsample_bytree=0.6,
@@ -53,22 +55,21 @@ def predict_az():
             X_train,
             y_train,
             eval_set=[(X_valid, y_valid)],
-            early_stopping_rounds=10,
             verbose=False,
         )
 
-        y_pred = model.predict(X_test, ntree_limit=model.best_ntree_limit)
-        y_pred[y_pred < 0.0] = 0.0
+        y_pred = model.predict(X_test, iteration_range=(0, model.best_iteration))
+        # y_pred[y_pred < 0.0] = 0.0
 
         # save_results("az", split, sample_file, y_test, y_pred)
         r_squared = r2_score(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)
-        print(f"Test {i + 1}", r_squared, mae)
+        print(f"Test {i + 1}", r_squared, mae / 100)
         r2s.append(r_squared)
         maes.append(mae)
 
     print("Tests R2:", sum(r2s) / len(r2s), stdev(r2s))
-    print("Tests MAE:", sum(maes) / len(maes), stdev(maes))
+    print("Tests MAE:", sum(maes) / (100 * len(maes)), stdev(maes) / 100)
 
 
 def main():

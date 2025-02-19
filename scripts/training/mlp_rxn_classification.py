@@ -14,9 +14,7 @@ from pycm import ConfusionMatrix
 from sklearn.preprocessing import LabelEncoder
 
 
-def get_pred(
-    train_X: np.array, train_y: np.array, eval_X: np.array, n_classes: int
-) -> list:
+def get_pred(train_X: np.array, train_y: np.array, eval_X: np.array, n_classes: int) -> list:
     """
     Get predictaions using a simple MLP.
     """
@@ -44,9 +42,7 @@ def get_pred(
     return np.argmax(model.predict(eval_X), axis=-1)
 
 
-def get_cache_confusion_matrix(
-    name: str, actual_vector: list, predict_vector: list
-) -> ConfusionMatrix:
+def get_cache_confusion_matrix(name: str, actual_vector: list, predict_vector: list) -> ConfusionMatrix:
     """
     Make confusion matrix and save it.
     """
@@ -69,9 +65,7 @@ def main(input_train_filepath, input_test_filepath):
     n_classes = len(le.classes_)
 
     # Reduce training set size
-    train_indices = np.random.choice(
-        np.arange(len(X_train)), int(1.0 * len(X_train)), replace=False
-    )
+    train_indices = np.random.choice(np.arange(len(X_train)), int(1.0 * len(X_train)), replace=False)
 
     X_train = X_train[train_indices]
     y_train = y_train[train_indices]

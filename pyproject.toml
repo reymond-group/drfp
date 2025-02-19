@@ -1,8 +1,75 @@
-[build-system]
-# AVOID CHANGING REQUIRES: IT WILL BE UPDATED BY PYSCAFFOLD!
-requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5", "wheel"]
-build-backend = "setuptools.build_meta"
+[project]
+name = "drfp"
+dynamic = ["version"]
+description = "An NLP-inspired chemical reaction fingerprint based on basic set arithmetic."
+authors = [
+    {name = "Daniel Probst", email = "daniel.probst@hey.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows"
+]
+dependencies = [
+    "tqdm",
+    "click",
+    "xgboost",
+    "openpyxl",
+    "numpy>=2.2.2",
+    "rdkit>=2024.9.4",
+    "pre-commit>=4.1.0",
+]
 
-[tool.setuptools_scm]
-# See configuration details in https://github.com/pypa/setuptools_scm
-version_scheme = "no-guess-dev"
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "tox>=4.24.1",
+    "ruff>=0.9.4",
+]
+
+
+[project.urls]
+Documentation = "https://github.com/reymond-group/drfp"
+Source = "https://github.com/reymond-group/drfp"
+Twitter = "https://twitter.com/skepteis"
+
+[project.scripts]
+drfp = "drfp.cli:main"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.pytest]
+addopts = "--cov drfp --cov-report term-missing --verbose"
+testpaths = ["tests"]
+norecursedirs = ["dist", "build", ".tox"]
+
+[tool.ruff]
+line-length = 127
+output-format = "github"
+show-fixes = true
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

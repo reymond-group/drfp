@@ -30,7 +30,7 @@ y_tests = []
 r2_scores = []
 rmse_scores = []
 
-for (name, split) in NAME_SPLIT:
+for name, split in NAME_SPLIT:
     fingerprints_file_name = f"../../data/{name}-2048-3-true.pkl"
     map_file_name = f"../../data/{name}-2048-3-true.map.pkl"
 
@@ -39,9 +39,7 @@ for (name, split) in NAME_SPLIT:
     df = df[["rxn", "y"]]
     df.columns = ["text", "labels"]
 
-    X, mapping = DrfpEncoder.encode(
-        df.text.to_numpy(), n_folded_length=2048, radius=3, rings=True, mapping=True
-    )
+    X, mapping = DrfpEncoder.encode(df.text.to_numpy(), n_folded_length=2048, radius=3, rings=True, mapping=True)
 
     X = np.asarray(
         X,

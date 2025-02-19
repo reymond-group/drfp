@@ -10,9 +10,7 @@ from collections import Counter
 from pycm import ConfusionMatrix
 
 
-def get_nearest_neighbours_prediction(
-    train_X: np.array, train_y: np.array, eval_X: np.array, n_neighbours: int = 5
-) -> list:
+def get_nearest_neighbours_prediction(train_X: np.array, train_y: np.array, eval_X: np.array, n_neighbours: int = 5) -> list:
     """
     Use faiss to make a K-nearest neighbour prediction
     """
@@ -39,9 +37,7 @@ def get_pred(y: list, results: list) -> list:
     return y_pred
 
 
-def get_cache_confusion_matrix(
-    name: str, actual_vector: list, predict_vector: list
-) -> ConfusionMatrix:
+def get_cache_confusion_matrix(name: str, actual_vector: list, predict_vector: list) -> ConfusionMatrix:
     """
     Make confusion matrix and save it.
     """
@@ -76,16 +72,12 @@ def main(input_train_filepath, input_test_filepath, cm_name: str, reduce: float)
     X_test, y_test, _ = pickle.load(open(input_test_filepath, "rb"))
 
     # Reduce training set size
-    train_indices = np.random.choice(
-        np.arange(len(X_train)), int(reduce * len(X_train)), replace=False
-    )
+    train_indices = np.random.choice(np.arange(len(X_train)), int(reduce * len(X_train)), replace=False)
 
     X_train = X_train[train_indices]
     y_train = y_train[train_indices]
 
-    y_pred = [
-        int(i) for i in get_nearest_neighbours_prediction(X_train, y_train, X_test)
-    ]
+    y_pred = [int(i) for i in get_nearest_neighbours_prediction(X_train, y_train, X_test)]
 
     cm = get_cache_confusion_matrix(
         cm_name,

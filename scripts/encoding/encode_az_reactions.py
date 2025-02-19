@@ -23,15 +23,7 @@ def get_az_rxns(fold_idx: int = 0):
     test_ids = splits["test_idx"][fold_idx + 1]
 
     df = pd.read_csv(Path(az_path, "az_no_rdkit.csv"))
-    df["smiles"] = (
-        df.reactant_smiles
-        + "."
-        + df.solvent_smiles
-        + "."
-        + df.base_smiles
-        + ">>"
-        + df.product_smiles
-    )
+    df["smiles"] = df.reactant_smiles + "." + df.solvent_smiles + "." + df.base_smiles + ">>" + df.product_smiles
 
     train = df.iloc[train_ids]
     test = df.iloc[test_ids]

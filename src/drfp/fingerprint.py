@@ -88,9 +88,7 @@ class DrfpEncoder:
 
         for index, _ in enumerate(in_mol.GetAtoms()):
             for i in range(1, radius + 1):
-                p = AllChem.FindAtomEnvironmentOfRadiusN(
-                    in_mol, i, index, useHs=include_hydrogens
-                )
+                p = AllChem.FindAtomEnvironmentOfRadiusN(in_mol, i, index, useHs=include_hydrogens)
                 amap = {}
                 submol = AllChem.PathToSubmol(in_mol, p, atomMap=amap)
 
@@ -160,9 +158,7 @@ class DrfpEncoder:
 
         sides = in_smiles.split(">")
         if len(sides) < 3:
-            raise NoReactionError(
-                f"The following is not a valid reaction SMILES: '{in_smiles}'"
-            )
+            raise NoReactionError(f"The following is not a valid reaction SMILES: '{in_smiles}'")
 
         if len(sides[1]) > 0:
             sides[0] += "." + sides[1]
@@ -244,7 +240,7 @@ class DrfpEncoder:
 
     @staticmethod
     def hash(shingling: List[str]) -> np.ndarray:
-        """Directly hash all the SMILES in a shingling to a 32-bit integerself.
+        """Directly hash all the SMILES in a shingling to a 32-bit integer.
 
         Arguments:
             shingling: A list of n-grams
@@ -252,18 +248,20 @@ class DrfpEncoder:
         Returns:
             A list of hashed n-grams
         """
-
         hash_values = []
 
         for t in shingling:
-            hash_values.append(int(blake2b(t, digest_size=4).hexdigest(), 16))
+            # Convert to signed 32-bit by taking modulo 2^32 and subtracting 2^32 if >= 2^31
+            h = int(blake2b(t, digest_size=4).hexdigest(), 16)
+            h = h & 0xFFFFFFFF  # Ensure 32-bit
+            if h >= 0x80000000:  # If >= 2^31
+                h -= 0x100000000  # Subtract 2^32 to make negative
+            hash_values.append(h)
 
         return np.array(hash_values, dtype=np.int32)
 
     @staticmethod
-    def fold(
-        hash_values: np.ndarray, length: int = 2048
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    def fold(hash_values: np.ndarray, length: int = 2048) -> Tuple[np.ndarray, np.ndarray]:
         """Folds the hash values to a binary vector of a given length.
 
         Arguments:
@@ -355,9 +353,7 @@ class DrfpEncoder:
 
             if mapping:
                 for unfolded_index, folded_index in enumerate(on_bits):
-                    result_map[folded_index].add(
-                        smiles_diff[unfolded_index].decode("utf-8")
-                    )
+                    result_map[folded_index].add(smiles_diff[unfolded_index].decode("utf-8"))
 
             if atom_index_mapping:
                 aidx_bit_map = {}

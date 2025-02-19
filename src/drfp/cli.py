@@ -36,12 +36,8 @@ from drfp import DrfpEncoder
     help="Whether or not to also export a mapping to help interpret the fingerprint.",
 )
 @click.option("--hydrogens", is_flag=True, help="Include hydrogens explicitly.")
-@click.option(
-    "--root", is_flag=True, help="Root central atoms during substructure generation."
-)
-@click.option(
-    "--silent", is_flag=True, help="Hide all output such as the progress bar."
-)
+@click.option("--root", is_flag=True, help="Root central atoms during substructure generation.")
+@click.option("--silent", is_flag=True, help="Hide all output such as the progress bar.")
 def main(
     input_file: TextIO,
     output_file: TextIO,

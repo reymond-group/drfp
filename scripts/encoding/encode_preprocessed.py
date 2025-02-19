@@ -25,16 +25,11 @@ def encode(smiles: Iterable, length: int = 2048, radius: int = 3) -> np.ndarray:
 def encode_dataset(smiles: Iterable, length: int, radius: int) -> np.ndarray:
     """Encode the reaction SMILES to drfp"""
 
-    cpu_count = (
-        multiprocessing.cpu_count()
-    )  # Data gets too big for piping when splitting less in python < 2.8
+    cpu_count = multiprocessing.cpu_count()  # Data gets too big for piping when splitting less in python < 2.8
 
     # Split reaction SMILES for multiprocessing
     k, m = divmod(len(smiles), cpu_count)
-    smiles_chunks = (
-        smiles[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)]
-        for i in range(cpu_count)
-    )
+    smiles_chunks = (smiles[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(cpu_count))
 
     # Run the fingerprint generation in parallel
     results = []

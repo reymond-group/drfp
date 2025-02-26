@@ -37,7 +37,7 @@ def save_results(
 
 def predict_az():
     root_path = Path(__file__).resolve().parent
-    az_file_path = Path(root_path, "../../data/az/az-2048-3-true.pkl")
+    az_file_path = Path(root_path, "../../data/az/az-10240-3-true.pkl")
 
     data = pickle.load(open(az_file_path, "rb"))
 

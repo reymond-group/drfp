@@ -158,7 +158,7 @@ wheels = [
 
 [[package]]
 name = "drfp"
-version = "0.1.dev89+g7fb3168.d20250204"
+version = "0.1.dev101+g8b1c975.d20250401"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -182,10 +182,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "click" },
-    { name = "numpy", specifier = ">=2.2.2" },
+    { name = "numpy" },
     { name = "openpyxl" },
-    { name = "pre-commit", specifier = ">=4.1.0" },
-    { name = "rdkit", specifier = ">=2024.9.4" },
+    { name = "pre-commit" },
+    { name = "rdkit" },
     { name = "tqdm" },
     { name = "xgboost" },
 ]

@@ -25,7 +25,7 @@ A notbook that explains how you can use SHAP to analyse and interpret your machi
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/reymond-group/drfp/HEAD?filepath=notebooks%2F02_model_explainability.ipynb)
 
 ## Installation and Usage
-*DRFP* can be installed from pypi using `pip install drfp`. However, it depends on [RDKit](https://www.rdkit.org/) which is best [installed using conda](https://www.rdkit.org/docs/Install.html).
+*DRFP* can be installed from pypi using `pip install drfp`.
 
 Once DRFP is installed, there are two ways you can use it. You can use the cli app `drfp` or the library provided by the package.
 
@@ -56,18 +56,18 @@ The variable `fps` now points to a list containing the fingerprints for the two 
 
 The library contains the class `DrfpEncoder` with one public method `encode`.
 
-| `DrfpEncoder.encode()` | Description | Type | Default |
-|-|-|-|-|
-| `X` | An iterable (e.g. a list) of reaction SMILES or a single reaction SMILES to be encoded | `Iterable` or `str` |  |
-| `n_folded_length` | The folded length of the fingerprint (the parameter for the modulo hashing) | `int` | `2048` |
-| `min_radius` | The minimum radius of a substructure (0 includes single atoms) | `int` | `0` |
-| `radius` | The maximum radius of a substructure | `int` | `3` |
-| `rings` | Whether to include full rings as substructures | `bool` | `True` |
-| `mapping` |  Return a feature to substructure mapping in addition to the fingerprints. If true, the return signature of this method is `Tuple[List[np.ndarray], Dict[int, Set[str]]]` | `bool` | `False` |
-| `atom_index_mapping` | Return the atom indices of mapped substructures for each reaction | `bool` | `False` |
-| `root_central_atom` | Whether to root the central atom of substructures when generating SMILES | `bool` | `True` |
-| `include_hydrogens` | Whether to explicitly include hydrogens in the molecular graph | `bool` | `False` |
-| `show_progress_bar` | Whether to show a progress bar when encoding reactions | `bool` | `False` |
+| `DrfpEncoder.encode()` | Description                                                                                                                                                              | Type                | Default |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------- |
+| `X`                    | An iterable (e.g. a list) of reaction SMILES or a single reaction SMILES to be encoded                                                                                   | `Iterable` or `str` |         |
+| `n_folded_length`      | The folded length of the fingerprint (the parameter for the modulo hashing)                                                                                              | `int`               | `2048`  |
+| `min_radius`           | The minimum radius of a substructure (0 includes single atoms)                                                                                                           | `int`               | `0`     |
+| `radius`               | The maximum radius of a substructure                                                                                                                                     | `int`               | `3`     |
+| `rings`                | Whether to include full rings as substructures                                                                                                                           | `bool`              | `True`  |
+| `mapping`              | Return a feature to substructure mapping in addition to the fingerprints. If true, the return signature of this method is `Tuple[List[np.ndarray], Dict[int, Set[str]]]` | `bool`              | `False` |
+| `atom_index_mapping`   | Return the atom indices of mapped substructures for each reaction                                                                                                        | `bool`              | `False` |
+| `root_central_atom`    | Whether to root the central atom of substructures when generating SMILES                                                                                                 | `bool`              | `True`  |
+| `include_hydrogens`    | Whether to explicitly include hydrogens in the molecular graph                                                                                                           | `bool`              | `False` |
+| `show_progress_bar`    | Whether to show a progress bar when encoding reactions                                                                                                                   | `bool`              | `False` |
 
 # Reproduce
 Want to reproduce the results in our paper? You can find all the data in the `data` folder and encoding and training scripts in the `scripts` folder.
@@ -81,4 +81,26 @@ Want to reproduce the results in our paper? You can find all the data in the `da
   year={2022},
   publisher={Royal Society of Chemistry}
 }
+```
+
+## Development Setup
+
+This project uses [UV](https://github.com/astral-sh/uv) for dependency management. To set up a development environment:
+
+1. Install UV following the [official instructions](https://github.com/astral-sh/uv#installation)
+
+2. Clone the repository:
+```bash
+git clone https://github.com/reymond-group/drfp
+cd drfp
+```
+
+3. Install dependencies including development packages:
+```bash
+uv sync --dev
+```
+
+4. Run tests:
+```bash
+uv run pytest
 ```

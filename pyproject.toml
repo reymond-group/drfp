@@ -27,9 +27,9 @@ dependencies = [
     "click",
     "xgboost",
     "openpyxl",
-    "numpy>=2.2.2",
-    "rdkit>=2024.9.4",
-    "pre-commit>=4.1.0",
+    "numpy",
+    "rdkit",
+    "pre-commit",
 ]
 
 [dependency-groups]

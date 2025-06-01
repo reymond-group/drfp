@@ -24,6 +24,8 @@ A notbook that explains how you can use SHAP to analyse and interpret your machi
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/reymond-group/drfp/HEAD?filepath=notebooks%2F02_model_explainability.ipynb)
 
+To reproduce the electronic laboratory experiments, see [here](#electronic-laboratory-notebook-eln-experiment).
+
 ## Installation and Usage
 *DRFP* can be installed from pypi using `pip install drfp`.
 

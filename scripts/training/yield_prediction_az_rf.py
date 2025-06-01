@@ -42,32 +42,11 @@ def predict_az():
             split["test"]["y"],
         )
 
-        # Vanilla hyperparams
-        model = XGBRegressor(
-            n_estimators=999999,
-            learning_rate=0.01,
-            early_stopping_rounds=10,
-            max_depth=12,
-            min_child_weight=6,
-            colsample_bytree=0.6,
-            subsample=0.8,
-            random_state=42,
-        )
-
-        model.fit(
-            X_train,
-            y_train,
-            eval_set=[(X_valid, y_valid)],
-            verbose=False,
-        )
-
-        y_pred = model.predict(X_test, iteration_range=(0, model.best_iteration))
-
-        # X_train = np.concatenate((X_train, X_valid))
-        # y_train = np.concatenate((y_train, y_valid))
-        # model = RandomForestRegressor(n_estimators=1000, random_state=42)
-        # model.fit(X_train, y_train)
-        # y_pred = model.predict(X_test)
+        X_train = np.concatenate((X_train, X_valid))
+        y_train = np.concatenate((y_train, y_valid))
+        model = RandomForestRegressor(n_estimators=1000, random_state=42)
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
 
         r_squared = r2_score(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)

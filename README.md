@@ -74,13 +74,14 @@ Want to reproduce the results in our paper? You can find all the data in the `da
 
 ## Electronic Laboratory Notebook (ELN) Experiment
 To reproduce the experiments on the electronic laboratory notebook (ELN) data:
-
-1. Encode the data using the script `encode_az_reactions.py`. This will write the files `az-2048-3-true.pkl` and `az-2048-3-true.pkl.gz` to the folder `data/az`.
+1. Clone this repository `git clone git@github.com:reymond-group/drfp.git`
+3. Install drfp either using `pip install drfp` or in the cloned directory using `pip install .`. Note that the latter will install the current development version of drfp.
+4. Encode the data using the script `encode_az_reactions.py`. This will write the files `az-2048-3-true.pkl` and `az-2048-3-true.pkl.gz` to the folder `data/az`.
 ```bash
 cd scripts
 python encoding/encode_az_reactions.py
 ```
-2. Train and test the xgboost model using the script `yield_prediction_az.py` (or `yield_prediction_az_rf.py` for the random forest model):
+4. Train and test the xgboost model using the script `yield_prediction_az.py` (or `yield_prediction_az_rf.py` for the random forest model):
 ```bash
 python training/yield_prediction_az.py
 python training/yield_prediction_az_rf.py
